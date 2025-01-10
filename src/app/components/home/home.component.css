@@ -1,0 +1,29 @@
+.sidenav-container {
+    height: 100%;
+  }
+  
+  .sidebar-content {
+    padding: 20px;
+    font-size: 18px;
+    background-color: steelblue;
+    height: 100%;
+  }
+  
+  .sidebar-content ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .sidebar-content ul li {
+    margin: 15px 0;
+  }
+  
+  .sidebar-content ul li a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .sidebar-content ul li a:hover {
+    text-decoration: underline;
+  }

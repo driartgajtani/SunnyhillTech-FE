@@ -1,0 +1,21 @@
+<mat-sidenav-container class="sidenav-container">
+    <mat-sidenav mode="side" opened>
+      <div class="sidebar-content">
+        <div class="welcome-message">
+            <h5>{{ greetingMessage }}</h5>
+          </div>
+
+        <h2>Menu</h2>
+        <ul>
+          <li><a href="#">Dashboard</a></li>
+          <li><a routerLink="/home/products" routerLinkActive="router-link-active"  href="#">Products</a></li>
+          <li><a routerLink="/home/categories" routerLinkActive="router-link-active"> Categories</a></li>
+          <li><a (click)="openProfileDialog()">Profile</a></li>
+          <li><a (click)="logout()">Logout</a></li>
+        </ul>
+      </div>
+    </mat-sidenav>
+    <mat-sidenav-content>
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>

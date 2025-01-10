@@ -1,0 +1,59 @@
+/* Split screen */
+.row {
+    height: 100vh;
+  }
+  
+  mat-tab-group{
+    width: 400px;
+  }
+  .left-panel {
+    height: 100%;
+    background-color: #2a2a2a;
+    animation: fadeInOut 5s infinite;
+  }
+  
+  /* Fading effect keyframes */
+  @keyframes fadeInOut {
+    0% {
+      opacity: 0.2;
+      background-color: #ff6b6b;
+    }
+    50% {
+      opacity: 0.8;
+      background-color: #f06595;
+    }
+    100% {
+      opacity: 0.2;
+      background-color: #ff914d;
+    }
+  }
+  .animated-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Style the login card */
+  .login-card {
+    /* max-width: 400px; */
+    width: 100%;
+    background-color: #fff;
+    border-radius: 8px;
+  }
+  
+  /* Mobile responsiveness */
+  @media (max-width: 768px) {
+    .left-panel {
+      display: none; /* Hide the left panel on small screens */
+    }
+    .row {
+      flex-direction: column;
+    }
+    .login-card {
+      width: 100%;
+    }
+  }
+  

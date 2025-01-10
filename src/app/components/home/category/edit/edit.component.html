@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>Edit the existing Category</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="categoryForm" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="fill">
+      <mat-label>Description</mat-label>
+      <input matInput formControlName="description" required />
+      <mat-error *ngIf="categoryForm.get('description').hasError('required')">Product Name is required</mat-error>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-button (click)="dialogRef.close()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="categoryForm.invalid" (click)="onSubmit()" type="submit">Add Category</button>
+</mat-dialog-actions>
