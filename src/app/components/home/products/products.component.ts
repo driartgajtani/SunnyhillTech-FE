@@ -3,10 +3,11 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator'; 
 import { MatIconModule } from '@angular/material/icon'; 
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatButtonModule } from '@angular/material/button';
-
-
-
+import { MatSelectModule } from '@angular/material/select';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button'
 import { Observable } from 'rxjs';
 import { MatDialog } from '@angular/material/dialog';
 import { Product } from '../../../models/product';
@@ -15,34 +16,56 @@ import { AddComponent } from './add/add.component';
 import { EditComponent } from './edit/edit.component';
 import { DeleteComponent } from './delete/delete.component';
 import { ToastrService } from 'ngx-toastr'; // Import ToastrService to show error messages
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { CategoryService } from '../../../services/category.service';
+import { Category } from '../../../models/category';
 
 @Component({
   selector: 'app-products',
   imports: [
+    ReactiveFormsModule,
     MatTableModule, 
     MatPaginatorModule, 
     MatIconModule, 
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSelectModule,
+    MatInputModule,
+    CommonModule
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
 })
 export class ProductsComponent implements OnInit {
   products$: Observable<Product[]>;
-  displayedColumns: string[] = ['name', 'price', 'quantity', 'status', 'actions'];
+  categories$: Observable<Category[]>;
+  displayedColumns: string[] = ['name', 'price', 'quantity', 'status', 'category', 'actions'];
 
   page: number = 1;
   pageSize: number = 10;
   totalCount: number;
+  filterForm: FormGroup;
+
+
   
-  constructor(private dialog: MatDialog, private productService: ProductService, private toastr: ToastrService) {
+  constructor(private dialog: MatDialog, private productService: ProductService, private toastr: ToastrService, private fb: FormBuilder, private categoryService: CategoryService) {
     this.products$ = this.productService.products$;
+    this.categories$ = this.categoryService.categorys$;
     this.productService.count$.subscribe(res => this.totalCount = res);
+    this.filterForm = this.fb.group({
+      name: [''],
+      status: [''],
+      categoryId: [null],
+    });
   }
 
   ngOnInit() {
-    this.productService.loadProducts(this.page, this.pageSize);  // Fetch products on initialization
+    this.categoryService.loadCategorys();
+    this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);  // Fetch products on initialization
+    this.filterForm.valueChanges.subscribe(() => {
+      this.page = 1; // Reset to the first page when filters change
+      this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
+    });
   }
 
   // Delete product with confirmation
@@ -52,7 +75,7 @@ export class ProductsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'success') {
-        this.productService.loadProducts(this.page, this.pageSize);
+        this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
         this.toastr.success('Deleted Successfully')
       }
     });
@@ -68,7 +91,7 @@ export class ProductsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'success') {
-        this.productService.loadProducts(this.page, this.pageSize);
+        this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
         this.toastr.success('Updated Successfully')
       }
     });
@@ -76,7 +99,7 @@ export class ProductsComponent implements OnInit {
 
   onPageChange(page: number): void {
     this.page = page;
-    this.productService.loadProducts(this.page, this.pageSize);
+    this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
   }
 
   openAddProductDialog(): void {
@@ -84,9 +107,16 @@ export class ProductsComponent implements OnInit {
   
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'success') {
-        this.productService.loadProducts(this.page, this.pageSize);
+        this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
         this.toastr.success('Added Successfully')
       }
     });
   }
+
+    // Method to clear filters
+    clearFilters(): void {
+      this.filterForm.reset(); // Reset the form to its initial state
+      this.page = 1;
+      this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value); // Fetch unfiltered products
+    }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { FilterProduct } from '../models/filterproducts';
 import { PagedResult } from '../models/helpers/pagedresult';
 import { Product } from '../models/product';
 import { ApiService } from './api.service';
@@ -18,9 +19,9 @@ export class ProductService {
 
     constructor(private apiService: ApiService) { }
 
-    loadProducts(page:number, pageSize: number): void {
+    loadProducts(page:number, pageSize: number, filterObject: FilterProduct): void {
         this.apiService
-          .get<PagedResult>(`${this.controllerName}/${page}/${pageSize}`)
+          .post<PagedResult, FilterProduct>(`${this.controllerName}/${page}/${pageSize}`, filterObject)
           .pipe(
             tap((data: PagedResult) => {
                 this.productsSubject.next(data.items)

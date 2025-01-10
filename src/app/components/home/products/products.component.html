@@ -2,6 +2,33 @@
 <div class="container mt-5">
   <button mat-button (click)="openAddProductDialog()">Add Product</button>
 
+  <div class="filter-form">
+    <form [formGroup]="filterForm">
+      <mat-form-field appearance="fill">
+        <mat-label>Product Name</mat-label>
+        <input matInput formControlName="name" placeholder="Filter by name">
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Status</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="Active">Active</mat-option>
+          <mat-option value="Inactive">Inactive</mat-option>
+        </mat-select>
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Category</mat-label>
+        <mat-select formControlName="categoryId" required>
+            <mat-option *ngFor="let item of categories$ | async" [value]="item.id">{{item.description}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+      
+      <button mat-button type="button" (click)="clearFilters()">Clear Filters</button>
+
+    </form>
+  </div>
+
   <mat-table [dataSource]="products$" matSort>
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
@@ -21,6 +48,11 @@
     <ng-container matColumnDef="status">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
       <mat-cell *matCellDef="let element">{{element.status}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="category">
+      <mat-header-cell *matHeaderCellDef mat-sort-header>Category</mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.category.description}}</mat-cell>
     </ng-container>
   
     <ng-container matColumnDef="actions">
