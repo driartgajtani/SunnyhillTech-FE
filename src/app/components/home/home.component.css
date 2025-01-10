@@ -27,3 +27,7 @@
   .sidebar-content ul li a:hover {
     text-decoration: underline;
   }
+
+  a{
+    cursor: pointer;
+  }
