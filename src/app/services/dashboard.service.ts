@@ -14,7 +14,6 @@ export class DashboardService {
     public dashboardMetrics$: Observable<DashboardMetrics> = this.dashboardSubject.asObservable();
 
     constructor(private apiService: ApiService) { 
-        this.loadMetrics();
     }
 
     loadMetrics(): void {

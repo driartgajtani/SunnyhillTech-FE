@@ -32,11 +32,12 @@
     cursor: pointer;
   }
 
-  .button{
+  .button{  
     display: flex;
     justify-content: center;
   }
 
   .row {
+    width: 100%;
     justify-content: right;
   }

@@ -12,6 +12,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { DeleteComponent } from './delete/delete.component';
 import { ToastrService } from 'ngx-toastr'; // Import ToastrService to show error messages
+import { ProfileService } from '../../../services/profile.service';
+import { Profile } from '../../../models/profile';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-category',
@@ -20,7 +23,8 @@ import { ToastrService } from 'ngx-toastr'; // Import ToastrService to show erro
     MatPaginatorModule, 
     MatIconModule, 
     MatDialogModule,
-    MatButtonModule
+    MatButtonModule,
+    CommonModule
   ],
   templateUrl: './category.component.html',
   styleUrl: './category.component.css'
@@ -28,14 +32,20 @@ import { ToastrService } from 'ngx-toastr'; // Import ToastrService to show erro
 export class CategoryComponent implements OnInit {
   category$: Observable<Category[]>;
   displayedColumns: string[] = ['id', 'description', 'actions'];
+  user: Profile;
 
-  constructor(private dialog: MatDialog, private categoryService: CategoryService, private toastr: ToastrService) {
+  constructor(private dialog: MatDialog, private categoryService: CategoryService, private toastr: ToastrService, private profileService: ProfileService) {
     this.category$ = this.categoryService.categorys$;
+    this.profileService.profile$.subscribe((res: Profile) => {
+      this.user = res
+    });
   }
 
   ngOnInit() {
     this.categoryService.loadCategorys();  // Fetch categories on initialization
   }
+
+  
 
 
   deleteCategory(category: Category): void {

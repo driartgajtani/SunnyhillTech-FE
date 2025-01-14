@@ -57,7 +57,6 @@ export class ProductsComponent implements OnInit {
     this.products$ = this.productService.products$;
     this.profileService.profile$.subscribe((res: Profile) => {
       this.user = res
-      console.log(this.user)
     });
     this.categories$ = this.categoryService.categorys$;
     this.productService.count$.subscribe(res => this.totalCount = res);

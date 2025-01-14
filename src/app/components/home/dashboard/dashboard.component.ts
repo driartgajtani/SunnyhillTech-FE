@@ -16,7 +16,7 @@ export class DashboardComponent {
 
 
   constructor(private dashboardService: DashboardService) {
-
+    this.dashboardService.loadMetrics();
     this.dashboardService.dashboardMetrics$.subscribe(
       ((res: DashboardMetrics) => {
         this.totalProductsCount = res?.productCount;
