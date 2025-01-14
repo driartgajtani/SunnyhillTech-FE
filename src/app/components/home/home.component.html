@@ -7,14 +7,24 @@
 
         <h2>Menu</h2>
         <ul>
-          <li><a routerLink="/home/products" routerLinkActive="router-link-active"  href="#">Products</a></li>
-          <li><a routerLink="/home/categories" routerLinkActive="router-link-active"> Categories</a></li>
-          <li><a (click)="openProfileDialog()">Profile</a></li>
-          <li><a (click)="logout()">Logout</a></li>
+          <li><a routerLink="/home/dashboard" routerLinkActive="router-link-active"  href="#">{{ 'Dashboard' | translate}}</a></li>
+          <li><a routerLink="/home/products" routerLinkActive="router-link-active"  href="#">{{ 'Products' | translate}}</a></li>
+          <li><a routerLink="/home/categories" routerLinkActive="router-link-active"> {{ 'Categories' | translate}}</a></li>
+          <li><a (click)="openProfileDialog()">{{ 'Profile' | translate}}</a></li>
+          <li><a (click)="logout()">{{ 'Logout' | translate}}</a></li>
         </ul>
       </div>
     </mat-sidenav>
     <mat-sidenav-content>
+      <div class="row">
+        <div class="col-md-2 button">
+          <button mat-button  (click)="switchLanguage('en')">English</button>
+        </div>
+        <div class="col-md-2 button">
+          <button mat-button  (click)="switchLanguage('de')">German</button>
+        </div>
+      </div>
+
         <router-outlet></router-outlet>
     </mat-sidenav-content>
   </mat-sidenav-container>

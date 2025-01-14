@@ -29,7 +29,7 @@
     </form>
   </div>
 
-  <mat-table [dataSource]="products$" matSort>
+  <mat-table [dataSource]="products$" matSort (matSortChange)="onSortChange($event)">
     <ng-container matColumnDef="name">
       <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
       <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
@@ -56,12 +56,13 @@
     </ng-container>
   
     <ng-container matColumnDef="actions">
-      <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+      
+      <mat-header-cell  *matHeaderCellDef>Actions</mat-header-cell>
       <mat-cell *matCellDef="let element">
-        <button mat-icon-button (click)="editProduct(element)">
+        <button *ngIf="user && user.role == 'Admin'" mat-icon-button (click)="editProduct(element)">
           <mat-icon>edit</mat-icon>
         </button>
-        <button mat-icon-button (click)="deleteProduct(element)">
+        <button *ngIf="user && user.role == 'Admin'" mat-icon-button (click)="deleteProduct(element)">
           <mat-icon>delete</mat-icon>
         </button>
       </mat-cell>
@@ -71,10 +72,11 @@
     <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
   </mat-table>
   <mat-paginator  
-  [length]="totalCount"
-  [pageSize]="pageSize"
-  [pageIndex]="page - 1"
-  (page)="onPageChange($event.pageIndex + 1)"></mat-paginator>
+    [length]="totalCount"
+    [pageSize]="pageSize"
+    [pageIndex]="page - 1"
+    (page)="onPageChange($event.pageIndex + 1)">
+  </mat-paginator>
 </div>
 
 

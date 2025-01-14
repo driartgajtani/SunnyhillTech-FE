@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { ApiService } from './services/api.service';
 import { AuthService } from './services/auth.service';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,7 @@ import { ProfileService } from './services/profile.service';
     RouterOutlet,
     RouterModule,
     CommonModule,
-    HttpClientModule
+    HttpClientModule,
   ],    
   providers: [
     ApiService,

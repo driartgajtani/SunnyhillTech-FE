@@ -10,6 +10,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MatDialogModule, MAT_DIALOG_DATA  } from '@angular/material/dialog';
 import { Profile } from '../../../models/profile';
 import { ProfileService } from '../../../services/profile.service';
+import { MatTabsModule } from '@angular/material/tabs'
+import { ResetPasswordRequest } from '../../../models/auth/reset-password-request';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-profile',
@@ -21,21 +24,25 @@ import { ProfileService } from '../../../services/profile.service';
     MatIconModule,
     MatDialogModule,
     MatSelectModule,
-    CommonModule
+    CommonModule,
+    MatTabsModule
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
   profileForm: FormGroup;
+  resetPassword: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private profileService: ProfileService,
+    private authService: AuthService,
     public dialogRef: MatDialogRef<ProfileComponent>,
     @Inject(MAT_DIALOG_DATA) public data // Inject the data passed by the parent component
 
   ) {
+
     data.subscribe(
       (res)=>{
         this.profileForm = this.fb.group({
@@ -43,6 +50,12 @@ export class ProfileComponent {
           name: [res.name, Validators.required],  
           surname: [res.surname, [Validators.required]],  
           email: [res.email, [Validators.required]],
+        });
+        this.resetPassword = this.fb.group({
+          id: [res.id, Validators.required],  
+          currentPassword: ['', Validators.required],  
+          newPassword: ['', Validators.required],  
+          confirmNewPassword: ['', [Validators.required]],  
         });
       }
     )
@@ -61,6 +74,16 @@ export class ProfileComponent {
     this.profileService.updateProfile(updatedProfile).subscribe({
       next: () => this.dialogRef.close('success'),
       error: () => this.dialogRef.close('error'),
+    });
+  }
+
+  onSubmitReset(): void {
+    console.log('asd')
+    
+    const updatePasswordModel: ResetPasswordRequest = this.resetPassword.value;
+
+    this.authService.resetPassword(updatePasswordModel).subscribe({
+      next: () => this.dialogRef.close('success')
     });
   }
 

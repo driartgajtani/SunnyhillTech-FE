@@ -1,29 +1,68 @@
-<h2 mat-dialog-title>Edit Profile</h2>
 
-<mat-dialog-content>
-  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="fill">
-      <mat-label>Name</mat-label>
-      <input matInput formControlName="name" required />
-      <mat-error *ngIf="profileForm.get('name').hasError('required')">Name is required</mat-error>
-    </mat-form-field>
+<mat-tab-group>
+  <!-- Login Tab -->
+  <mat-tab label="Profile">
+    <mat-card class="login-card p-4 shadow-lg">
 
-    <mat-form-field appearance="fill">
-      <mat-label>Surname</mat-label>
-      <input matInput formControlName="surname" required />
-      <mat-error *ngIf="profileForm.get('surname').hasError('required')">Email is required</mat-error>
-      <mat-error *ngIf="profileForm.get('surname').hasError('email')">Enter a valid email address</mat-error>
-    </mat-form-field>
+      <mat-dialog-content>
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="fill">
+            <mat-label>Name</mat-label>
+            <input matInput formControlName="name" required />
+            <mat-error *ngIf="profileForm.get('name').hasError('required')">Name is required</mat-error>
+          </mat-form-field>
+      
+          <mat-form-field appearance="fill">
+            <mat-label>Surname</mat-label>
+            <input matInput formControlName="surname" required />
+            <mat-error *ngIf="profileForm.get('surname').hasError('required')">Email is required</mat-error>
+            <mat-error *ngIf="profileForm.get('surname').hasError('email')">Enter a valid email address</mat-error>
+          </mat-form-field>
+      
+          <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" required />
+            <mat-error *ngIf="profileForm.get('email').hasError('required')">Phone number is required</mat-error>
+          </mat-form-field>
+        </form>
+      </mat-dialog-content>
+      
+      <mat-dialog-actions>
+        <button mat-button (click)="onCancel()">Cancel</button>
+        <button mat-raised-button color="primary" [disabled]="profileForm.invalid" (click)="onSubmit()" type="submit">Save</button>
+      </mat-dialog-actions>
+    </mat-card>
+  </mat-tab>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Email</mat-label>
-      <input matInput formControlName="email" type="email" required />
-      <mat-error *ngIf="profileForm.get('email').hasError('required')">Phone number is required</mat-error>
-    </mat-form-field>
-  </form>
-</mat-dialog-content>
-
-<mat-dialog-actions>
-  <button mat-button (click)="onCancel()">Cancel</button>
-  <button mat-raised-button color="primary" [disabled]="profileForm.invalid" (click)="onSubmit()" type="submit">Save</button>
-</mat-dialog-actions>
+  <!-- Registration Tab -->
+  <mat-tab label="Passwords">
+    <mat-card class="login-card p-4 shadow-lg">
+      <mat-dialog-content>
+        <form [formGroup]="resetPassword" (ngSubmit)="onSubmit()">
+          <mat-form-field appearance="fill">
+            <mat-label>Current password</mat-label>
+            <input matInput formControlName="currentPassword" type="password" required />
+            <mat-error *ngIf="resetPassword.get('currentPassword').hasError('required')">Current is required</mat-error>
+          </mat-form-field>
+      
+          <mat-form-field appearance="fill">
+            <mat-label>New password</mat-label>
+            <input matInput formControlName="newPassword" type="password" required />
+            <mat-error *ngIf="resetPassword.get('newPassword').hasError('required')">New password is required</mat-error>
+          </mat-form-field>
+      
+          <mat-form-field appearance="fill">
+            <mat-label>Confirm new password</mat-label>
+            <input matInput formControlName="confirmNewPassword" type="password" required />
+            <mat-error *ngIf="resetPassword.get('confirmNewPassword').hasError('required')">Confirm Password is required</mat-error>
+          </mat-form-field>
+        </form>
+      </mat-dialog-content>
+      
+    <mat-dialog-actions>
+      <button mat-button (click)="onCancel()">Cancel</button>
+      <button mat-raised-button color="primary" [disabled]="resetPassword.invalid" (click)="onSubmitReset()" type="submit">Save</button>
+    </mat-dialog-actions>
+    </mat-card>
+  </mat-tab>
+</mat-tab-group>

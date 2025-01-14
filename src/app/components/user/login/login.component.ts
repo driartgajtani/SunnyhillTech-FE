@@ -27,7 +27,9 @@ import { ProfileService } from '../../../services/profile.service';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   registerForm: FormGroup;
+  forgotPasswordForm: FormGroup;
 
+  forgotPassword: boolean = false;
   constructor(private fb: FormBuilder, private authService: AuthService, private profileService: ProfileService, private router: Router) {}
 
   ngOnInit(): void {
@@ -42,6 +44,10 @@ export class LoginComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
     });
+
+    this.forgotPasswordForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+    });
   }
 
 
@@ -54,6 +60,15 @@ export class LoginComponent implements OnInit {
     }
   }
 
+  onReset() {
+    if (this.forgotPasswordForm.valid) {
+      console.log('Reset successful', this.forgotPasswordForm.value);
+      this.authService.forgotPassword(this.forgotPasswordForm.value.email).subscribe(() => this.forgotPassword = false);
+    } else {
+      console.log('Form is invalid'); 
+    }
+  }
+
   onRegister() {
     if (this.registerForm.valid) {
       this.profileService.createUser(this.registerForm.value).subscribe(() => {
@@ -62,6 +77,10 @@ export class LoginComponent implements OnInit {
     } else {
       console.log('Form is invalid');
     }
+  }
+
+  showForgotPassword() {
+    this.forgotPassword = !this.forgotPassword;
   }
 
 }

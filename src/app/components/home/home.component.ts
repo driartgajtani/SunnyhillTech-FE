@@ -9,10 +9,12 @@ import { JwtService } from '../../services/jwt.service';
 import { JwtToken } from '../../models/auth/jwt-token';
 import { ProfileService } from '../../services/profile.service';
 import { ToastrService } from 'ngx-toastr'; // Import ToastrService to show error messages
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-home',
-  imports: [RouterModule, MatSidenavModule, MatDialogModule],
+  imports: [RouterModule, MatSidenavModule, MatDialogModule, TranslateModule, MatButtonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'
 })
@@ -24,11 +26,15 @@ export class HomeComponent {
   currentTime: string;
   greetingMessage: string;
 
-  constructor(private router: Router, private dialog: MatDialog, private jwtService: JwtService, private toastr: ToastrService, private profileService: ProfileService) {
+  constructor(private router: Router, private dialog: MatDialog, private jwtService: JwtService, private toastr: ToastrService, private profileService: ProfileService, private translate: TranslateService) {
+    // Set default language
+    this.translate.setDefaultLang('de');
+    // Use the current language
+    this.translate.use('de');
     this.data = this.jwtService.decodeToken();
     this.profileService.loadProfile(+this.data.Id)
     this.currentTime = this.getCurrentTime(); // Get the current time
-    this.greetingMessage = this.getGreetingMessage(this.currentTime, this.data.roles.toString());
+    this.getGreetingMessage(this.currentTime, this.data.roles.toString());
   }
 
   openProfileDialog(): void {
@@ -39,7 +45,7 @@ export class HomeComponent {
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'success') {
         this.profileService.loadProfile(+this.data.Id)
-        this.greetingMessage = this.getGreetingMessage(this.currentTime, this.data.roles.toString());
+        this.getGreetingMessage(this.currentTime, this.data.roles.toString());
         this.toastr.success('Updated Successfully')
         // Handle profile update success
       } else if (result === 'error') {
@@ -66,28 +72,33 @@ export class HomeComponent {
     // Adjust greeting based on time of day
     switch (timeOfDay) {
       case 'morning':
-        greeting = 'Good Morning';
+        this.translate.get('GoodMorning').subscribe(res => {
+          this.greetingMessage = res;
+          role.toLowerCase() == 'admin' ? this.greetingMessage += ', Admin! ' + this.data.Name : this.greetingMessage += ', ' +this.data.Name;
+        });
         break;
       case 'afternoon':
-        greeting = 'Good Afternoon';
-        break;
+        this.translate.get('GoodAfternoon').subscribe(res => {
+          this.greetingMessage = res;
+          role.toLowerCase() == 'admin' ? this.greetingMessage += ', Admin! ' + this.data.Name : this.greetingMessage += ', ' +this.data.Name;
+        });
+        break
       case 'evening':
-        greeting = 'Good Evening';
+        this.translate.get('GoodEvening').subscribe(res => {
+          this.greetingMessage = res;
+          role.toLowerCase() == 'admin' ? this.greetingMessage += ', Admin! ' + this.data.Name : this.greetingMessage += ', ' +this.data.Name;
+        });
         break;
-    }
 
-    // Append role-based message
-    switch (role.toLowerCase()) {
-      case 'admin':
-        greeting += ', Admin! ' + this.data.Name;
-        break;
-      default:
-        greeting += ', ' +this.data.Name;
-        break;
     }
 
     return greeting;
   }
+
+  switchLanguage(language: string) {
+    this.translate.use(language);
+    this.getGreetingMessage(this.currentTime, this.data.roles.toString());
+}
 
   logout() {
     this.jwtService.purgeAuth();

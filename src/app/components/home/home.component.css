@@ -31,3 +31,12 @@
   a{
     cursor: pointer;
   }
+
+  .button{
+    display: flex;
+    justify-content: center;
+  }
+
+  .row {
+    justify-content: right;
+  }

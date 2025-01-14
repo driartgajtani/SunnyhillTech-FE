@@ -19,6 +19,9 @@ import { ToastrService } from 'ngx-toastr'; // Import ToastrService to show erro
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { CategoryService } from '../../../services/category.service';
 import { Category } from '../../../models/category';
+import { MatSortModule, Sort } from '@angular/material/sort';
+import { ProfileService } from '../../../services/profile.service';
+import { Profile } from '../../../models/profile';
 
 @Component({
   selector: 'app-products',
@@ -31,7 +34,8 @@ import { Category } from '../../../models/category';
     MatButtonModule,
     MatSelectModule,
     MatInputModule,
-    CommonModule
+    CommonModule,
+    MatSortModule
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.css'
@@ -45,11 +49,16 @@ export class ProductsComponent implements OnInit {
   pageSize: number = 10;
   totalCount: number;
   filterForm: FormGroup;
-
-
+  defaultSortColumn: string = "Name";
+  defaultSortDirection: string = "desc";
+  user: Profile;
   
-  constructor(private dialog: MatDialog, private productService: ProductService, private toastr: ToastrService, private fb: FormBuilder, private categoryService: CategoryService) {
+  constructor(private dialog: MatDialog, private productService: ProductService, private toastr: ToastrService, private fb: FormBuilder, private categoryService: CategoryService, private profileService: ProfileService) {
     this.products$ = this.productService.products$;
+    this.profileService.profile$.subscribe((res: Profile) => {
+      this.user = res
+      console.log(this.user)
+    });
     this.categories$ = this.categoryService.categorys$;
     this.productService.count$.subscribe(res => this.totalCount = res);
     this.filterForm = this.fb.group({
@@ -61,10 +70,10 @@ export class ProductsComponent implements OnInit {
 
   ngOnInit() {
     this.categoryService.loadCategorys();
-    this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);  // Fetch products on initialization
+    this.productService.loadProducts(this.page, this.pageSize, this.defaultSortColumn, this.defaultSortDirection, this.filterForm.value);  // Fetch products on initialization
     this.filterForm.valueChanges.subscribe(() => {
       this.page = 1; // Reset to the first page when filters change
-      this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
+      this.productService.loadProducts(this.page, this.pageSize, this.defaultSortColumn, this.defaultSortDirection, this.filterForm.value);
     });
   }
 
@@ -75,7 +84,7 @@ export class ProductsComponent implements OnInit {
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result === 'success') {
-        this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
+        this.productService.loadProducts(this.page, this.pageSize, this.defaultSortColumn, this.defaultSortDirection, this.filterForm.value);
         this.toastr.success('Deleted Successfully')
       }
     });
@@ -91,15 +100,21 @@ export class ProductsComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'success') {
-        this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
+        this.productService.loadProducts(this.page, this.pageSize, this.defaultSortColumn, this.defaultSortDirection, this.filterForm.value);
         this.toastr.success('Updated Successfully')
       }
     });
   }
 
+  onSortChange(event: Sort): void {
+    this.defaultSortColumn = event.active.charAt(0).toUpperCase() + event.active.slice(1);;
+    this.defaultSortDirection = event.direction;
+    this.productService.loadProducts(this.page, this.pageSize, this.defaultSortColumn, this.defaultSortDirection, this.filterForm.value);
+  }
+
   onPageChange(page: number): void {
     this.page = page;
-    this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
+    this.productService.loadProducts(this.page, this.pageSize, this.defaultSortColumn, this.defaultSortDirection, this.filterForm.value);
   }
 
   openAddProductDialog(): void {
@@ -107,7 +122,7 @@ export class ProductsComponent implements OnInit {
   
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'success') {
-        this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value);
+        this.productService.loadProducts(this.page, this.pageSize, this.defaultSortColumn, this.defaultSortDirection, this.filterForm.value);
         this.toastr.success('Added Successfully')
       }
     });
@@ -117,6 +132,6 @@ export class ProductsComponent implements OnInit {
     clearFilters(): void {
       this.filterForm.reset(); // Reset the form to its initial state
       this.page = 1;
-      this.productService.loadProducts(this.page, this.pageSize, this.filterForm.value); // Fetch unfiltered products
+      this.productService.loadProducts(this.page, this.pageSize, this.defaultSortColumn, this.defaultSortDirection, this.filterForm.value); // Fetch unfiltered products
     }
 }

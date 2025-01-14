@@ -19,9 +19,9 @@ export class ProductService {
 
     constructor(private apiService: ApiService) { }
 
-    loadProducts(page:number, pageSize: number, filterObject: FilterProduct): void {
+    loadProducts(page:number, pageSize: number, sortColumn: string = "Name", sortDirection: string = "desc", filterObject: FilterProduct): void {
         this.apiService
-          .post<PagedResult, FilterProduct>(`${this.controllerName}/${page}/${pageSize}`, filterObject)
+          .post<PagedResult, FilterProduct>(`${this.controllerName}/${page}/${pageSize}/${sortColumn}/${sortDirection}`, filterObject)
           .pipe(
             tap((data: PagedResult) => {
                 this.productsSubject.next(data.items)
